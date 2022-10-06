@@ -11,7 +11,7 @@ import java.util.Locale;
 public class RailwayTransportService {
 
     @Autowired
-    MessageSource messages;
+    public MessageSource messages;
 
     public String createRailwayTransport(String model, int cost, int power, Locale locale) {
         RailwayTransport loco = new RailwayTransport();
@@ -21,10 +21,11 @@ public class RailwayTransportService {
         loco.setCost(cost);
         loco.setActual(true);
         loco.setWeight(30000);
+
         return String.format(messages.getMessage("loco.create.message", null, locale), loco);
     }
 
-    public String readRailwayTransport(String model, Locale locale) {
+    public RailwayTransport readRailwayTransport(String model, Locale locale) {
         RailwayTransport loco = new RailwayTransport();
         loco.setId((int)(Math.random() * 1000));
         loco.setModel(model);
@@ -32,7 +33,7 @@ public class RailwayTransportService {
         loco.setCost(1000000);
         loco.setActual(true);
         loco.setWeight(25000);
-        return String.format(messages.getMessage("loco.read.message", null, locale), loco.toString());
+        return loco;
     }
 
     public String updateRailwayTransport(int cost, RailwayTransport loco, Locale locale) {
@@ -42,6 +43,6 @@ public class RailwayTransportService {
 
     public String deleteRailwayTransport(RailwayTransport loco, Locale locale) {
         loco.setActual(false);
-        return String.format(messages.getMessage("loco.update.message", null, locale), loco);
+        return String.format(messages.getMessage("loco.delete.message", null, locale), loco);
     }
 }

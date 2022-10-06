@@ -3,10 +3,14 @@ package com.byval.labs.railwaytransport.controller;
 import com.byval.labs.railwaytransport.model.RailwayTransport;
 import com.byval.labs.railwaytransport.service.RailwayTransportService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Locale;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @RequestMapping(value = "manufacturer/transmachineholding/locomotives")
@@ -16,10 +20,16 @@ public class RailwayController {
     private RailwayTransportService service;
 
     @GetMapping(value = "/{model}/{locale}")
-    public ResponseEntity<String> getRailwayTransport(
+    public ResponseEntity<RailwayTransport> getRailwayTransport(
             @PathVariable("model") String model,
             @PathVariable("locale") Locale locale) {
-        return ResponseEntity.ok(service.readRailwayTransport(model, locale));
+
+        RailwayTransport loco = service.readRailwayTransport(model, locale);
+        loco.add(linkTo(methodOn(RailwayController.class).getRailwayTransport(model, locale)).withSelfRel(),
+                linkTo(methodOn(RailwayController.class).postRailwayTransport(model, 15000, 2500000, locale)).withRel(service.messages.getMessage("loco.read.create.message", null, locale)),
+                linkTo(methodOn(RailwayController.class).putRailwayTransport(1000000, loco, locale)).withRel(service.messages.getMessage("loco.read.update.message", null, locale)),
+                linkTo(methodOn(RailwayController.class).deleteRailwayTransport(loco, locale)).withRel(service.messages.getMessage("loco.read.delete.message", null, locale)));
+        return ResponseEntity.ok(loco);
     }
 
     @PostMapping
