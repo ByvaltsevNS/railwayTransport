@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Locale;
+
 @RestController
 @RequestMapping(value = "manufacturer/transmachineholding/locomotives")
 public class RailwayController {
@@ -13,30 +15,34 @@ public class RailwayController {
     @Autowired
     private RailwayTransportService service;
 
-    @GetMapping(value = "/{model}")
-    public ResponseEntity<RailwayTransport> getRailwayTransport(
-            @PathVariable("model") String model) {
-        return ResponseEntity.ok(service.readRailwayTransport(model));
+    @GetMapping(value = "/{model}/{locale}")
+    public ResponseEntity<String> getRailwayTransport(
+            @PathVariable("model") String model,
+            @PathVariable("locale") Locale locale) {
+        return ResponseEntity.ok(service.readRailwayTransport(model, locale));
     }
 
     @PostMapping
-    public ResponseEntity<RailwayTransport> postRailwayTransport(
+    public ResponseEntity<String> postRailwayTransport(
             @RequestParam("model") String model,
             @RequestParam("power") int power,
-            @RequestParam("cost") int cost) {
-        return ResponseEntity.ok(service.createRailwayTransport(model, power, cost));
+            @RequestParam("cost") int cost,
+            @RequestHeader(value = "Accept-Language", required = false) Locale locale) {
+        return ResponseEntity.ok(service.createRailwayTransport(model, power, cost, locale));
     }
 
     @PutMapping
-    public ResponseEntity<RailwayTransport> putRailwayTransport(
+    public ResponseEntity<String> putRailwayTransport(
             @RequestParam("cost") int cost,
-            @RequestBody RailwayTransport loco) {
-        return ResponseEntity.ok(service.updateRailwayTransport(cost, loco));
+            @RequestBody RailwayTransport loco,
+            @RequestParam("locale") Locale locale) {
+        return ResponseEntity.ok(service.updateRailwayTransport(cost, loco, locale));
     }
 
     @DeleteMapping
-    public ResponseEntity<RailwayTransport> deleteRailwayTransport(
-            @RequestBody RailwayTransport loco) {
-        return ResponseEntity.ok(service.deleteRailwayTransport(loco));
+    public ResponseEntity<String> deleteRailwayTransport(
+            @RequestBody RailwayTransport loco,
+            @RequestHeader(value = "Accept-Language", required = false) Locale locale) {
+        return ResponseEntity.ok(service.deleteRailwayTransport(loco, locale));
     }
 }

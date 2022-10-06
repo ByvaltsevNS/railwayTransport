@@ -1,12 +1,19 @@
 package com.byval.labs.railwaytransport.service;
 
 import com.byval.labs.railwaytransport.model.RailwayTransport;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
+
+import java.util.Locale;
 
 @Service
 public class RailwayTransportService {
 
-    public RailwayTransport createRailwayTransport(String model, int cost, int power) {
+    @Autowired
+    MessageSource messages;
+
+    public String createRailwayTransport(String model, int cost, int power, Locale locale) {
         RailwayTransport loco = new RailwayTransport();
         loco.setId((int)(Math.random() * 1000));
         loco.setModel(model);
@@ -14,10 +21,10 @@ public class RailwayTransportService {
         loco.setCost(cost);
         loco.setActual(true);
         loco.setWeight(30000);
-        return loco;
+        return String.format(messages.getMessage("loco.create.message", null, locale), loco);
     }
 
-    public RailwayTransport readRailwayTransport(String model) {
+    public String readRailwayTransport(String model, Locale locale) {
         RailwayTransport loco = new RailwayTransport();
         loco.setId((int)(Math.random() * 1000));
         loco.setModel(model);
@@ -25,17 +32,16 @@ public class RailwayTransportService {
         loco.setCost(1000000);
         loco.setActual(true);
         loco.setWeight(25000);
-        return loco;
+        return String.format(messages.getMessage("loco.read.message", null, locale), loco.toString());
     }
 
-    public RailwayTransport updateRailwayTransport(int cost, RailwayTransport loco) {
+    public String updateRailwayTransport(int cost, RailwayTransport loco, Locale locale) {
         loco.setCost(cost);
-        return loco;
+        return String.format(messages.getMessage("loco.update.message", null, locale), loco);
     }
 
-    public RailwayTransport deleteRailwayTransport(RailwayTransport loco) {
+    public String deleteRailwayTransport(RailwayTransport loco, Locale locale) {
         loco.setActual(false);
-        loco = null;
-        return loco;
+        return String.format(messages.getMessage("loco.update.message", null, locale), loco);
     }
 }
